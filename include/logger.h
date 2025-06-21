@@ -7,7 +7,7 @@
 #include <mutex>
 #include <thread>
 #include <chrono>
-#include <vector>
+#include <set>
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <libgen.h>
@@ -41,7 +41,8 @@ public:
 
     void setLogLevel(LogLevel level) { _current_log_level = level; }
 
-    void addLogDestination(LogDestination* destination) { _log_destinations.push_back(destination); }
+    void addLogDestination(LogDestination* destination) { _log_destinations.insert(destination); }
+    void removeLogDestination(LogDestination* destination) { _log_destinations.erase(destination); }
 
     // Helper functions
     std::string getCurrentTime();
@@ -69,7 +70,7 @@ private:
     std::string logLevelToString(LogLevel level);
 
     LogLevel                        _current_log_level;
-    std::vector<LogDestination*>    _log_destinations;
+    std::set<LogDestination*>    _log_destinations;
     std::mutex          mtx;
     int                 pid;
 };
