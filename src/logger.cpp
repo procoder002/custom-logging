@@ -79,3 +79,17 @@ void Logger::setLogLevel(std::string levelstr)
 	}
 	setLogLevel(level);
 }
+
+std::string Logger::getLogLevel() 
+{
+	return logLevelToString(_current_log_level);
+}
+
+std::vector<std::string> Logger::getDestinations()
+{
+	std::vector<std::string> dests;
+	for (auto& dest : _log_destinations) {
+		dests.push_back(dest.first);
+	}
+	return dests;
+}

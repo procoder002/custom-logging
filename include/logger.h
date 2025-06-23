@@ -40,11 +40,15 @@ class Logger {
 public:
     static Logger& getInstance();
 
+    std::string getLogLevel();
+
     void setLogLevel(LogLevel level) { _current_log_level = level; }
     void setLogLevel(std::string levelstr);
 
     void addLogDestination(std::string destname, LogDestination* destination);
     void removeLogDestination(std::string destname); 
+
+    std::vector<std::string> getDestinations();
 
     // Helper functions
     std::string getCurrentTime();
