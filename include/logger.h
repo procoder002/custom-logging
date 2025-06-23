@@ -7,7 +7,7 @@
 #include <mutex>
 #include <thread>
 #include <chrono>
-#include <set>
+#include <map>
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <libgen.h>
@@ -41,8 +41,8 @@ public:
 
     void setLogLevel(LogLevel level) { _current_log_level = level; }
 
-    void addLogDestination(LogDestination* destination) { _log_destinations.insert(destination); }
-    void removeLogDestination(LogDestination* destination) { _log_destinations.erase(destination); }
+    void addLogDestination(std::string destname, LogDestination* destination);
+    void removeLogDestination(std::string destname); 
 
     // Helper functions
     std::string getCurrentTime();
@@ -70,7 +70,7 @@ private:
     std::string logLevelToString(LogLevel level);
 
     LogLevel                        _current_log_level;
-    std::set<LogDestination*>    _log_destinations;
+    std::map<std::string, LogDestination*>    _log_destinations;
     std::mutex          mtx;
     int                 pid;
 };
@@ -93,8 +93,8 @@ void Logger::log(LogLevel level, char* filename, int lineno, Args... args) {
     log_stream << " (" << filename << ": " << lineno << ")" << "  { ProcessID: " << pid << ", ThreadID: " << tid << " }";
 
     // Forward log message to each destination
-    for (auto* destination : _log_destinations) {
-        destination->log(log_stream.str());
+    for (auto& destination : _log_destinations) {
+        destination.second->log(log_stream.str());
     }
 }
 

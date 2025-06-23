@@ -4,8 +4,9 @@
 thread_local int tid = -1;
 
 Logger::~Logger() {
-    for (auto* destination : _log_destinations) {
-        delete destination;
+    for (auto& dest : _log_destinations) {
+	LogDestination* destination = dest.second;
+        if(destination) delete destination;
     }
 }
 
@@ -36,3 +37,27 @@ std::string Logger::logLevelToString(LogLevel level) {
         default: return "UNKNOWN";
     }
 }
+
+void Logger::addLogDestination(std::string destname, LogDestination* destination) 
+{ 
+	if(_log_destinations.find(destname) != _log_destinations.end()) {
+		std::cout << "Log destionation already present for " << destname << std::endl;
+	}
+	else {
+		_log_destinations[destname] = destination; 
+	}
+}
+
+void Logger::removeLogDestination(std::string destname) 
+{ 
+	if(_log_destinations.find(destname) == _log_destinations.end()) {
+		std::cout << "Log destionation not found for " << destname  << std::endl;
+		return;
+	}
+
+	LogDestination* destination = _log_destinations[destname];
+	delete destination;
+	destination = NULL;
+	_log_destinations.erase(destname); 
+}
+
