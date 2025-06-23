@@ -38,6 +38,15 @@ std::string Logger::logLevelToString(LogLevel level) {
     }
 }
 
+LogLevel Logger::stringToLoglevel(std::string level) {
+	if(level == "DEBUG") return LogLevel::DEBUG;
+	else if(level == "INFO") return LogLevel::INFO;
+	else if(level == "WARNING") return LogLevel::WARNING;
+	else if(level == "ERROR") return LogLevel::ERROR;
+	else if(level == "FATAL") return LogLevel::FATAL;
+	else return LogLevel::UNKNOWN;
+}
+
 void Logger::addLogDestination(std::string destname, LogDestination* destination) 
 { 
 	if(_log_destinations.find(destname) != _log_destinations.end()) {
@@ -61,3 +70,12 @@ void Logger::removeLogDestination(std::string destname)
 	_log_destinations.erase(destname); 
 }
 
+void Logger::setLogLevel(std::string levelstr)
+{
+	LogLevel level = stringToLoglevel(levelstr);
+	if(level == LogLevel::UNKNOWN) {
+		std::cerr << "log level not found" << std::endl;
+		return;
+	}
+	setLogLevel(level);
+}

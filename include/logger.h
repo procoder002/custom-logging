@@ -32,7 +32,8 @@ enum class LogLevel {
     INFO,
     WARNING,
     ERROR,
-    FATAL
+    FATAL,
+    UNKNOWN
 };
 
 class Logger {
@@ -40,6 +41,7 @@ public:
     static Logger& getInstance();
 
     void setLogLevel(LogLevel level) { _current_log_level = level; }
+    void setLogLevel(std::string levelstr);
 
     void addLogDestination(std::string destname, LogDestination* destination);
     void removeLogDestination(std::string destname); 
@@ -68,6 +70,7 @@ private:
     Logger() : _current_log_level(LogLevel::DEBUG) { pid = getpid(); }
 
     std::string logLevelToString(LogLevel level);
+    LogLevel    stringToLoglevel(std::string level);
 
     LogLevel                        _current_log_level;
     std::map<std::string, LogDestination*>    _log_destinations;
